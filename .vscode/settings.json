@@ -1,0 +1,26 @@
+{
+  "javascript.validate.enable": false,
+  // "editor.minimap.enabled": false,
+  "editor.tabSize": 2,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/yarn.lock": true,
+    "**/package-lock.json": false
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/yarn.lock": true,
+    "**/package-lock.json": true
+  },
+  "editor.minimap.side": "right"
+}
