@@ -2,15 +2,15 @@
 import React from 'react'
 import { Provider, Dashboard } from '@digihcs/dashboard'
 import { menuRoutes } from '@configs'
+import { withQuery } from '@utils'
 
-function index(props) {
+function index({ data: { getRole }, ...props }) {
   const { history } = props
-
   const menuData = [
     {
       title: 'Dashboard',
       type: 'navigation',
-      childs: menuRoutes
+      childs: menuRoutes && getRole && menuRoutes.filter(item1 => item1.requiredRoles.includes(getRole))
     }
   ]
 
@@ -27,4 +27,21 @@ function index(props) {
   )
 }
 
-export default index
+export default withQuery(index)(
+  {
+    query: `
+      query getRole ($token: String!) {
+        getRole(token: $token)
+      }
+    `,
+    options: () => {
+      const token = window.localStorage.getItem('access-token') || ''
+      return {
+        variables: {
+          token
+        },
+        fetchPolicy: 'no-cache'
+      }
+    }
+  }
+)
