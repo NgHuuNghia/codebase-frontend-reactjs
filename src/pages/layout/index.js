@@ -5,7 +5,7 @@ import { MenuBurger, Button } from '@digihcs/innos-ui3'
 import '@digihcs/innos-ui3/es/menu-burger/style'
 import gql from 'graphql-tag'
 import PageHeader from '@pages/pageHeader'
-import Background from '../../assets/images/background1.png'
+import Background from '../../assets/images/background.png'
 import avatar from '../../assets/images/avatar.png'
 
 const GET_CURRENT_USER = gql`

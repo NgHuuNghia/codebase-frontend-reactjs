@@ -23,7 +23,13 @@ export const routersAuth = [
     path: '/userManage',
     component: 'user',
     name: 'Quản lý người dùng'
-  }
+  },
+  {
+    exact: true,
+    path: '/roleManage',
+    component: 'role',
+    name: 'Quản lý quyền'
+  },
 ]
 
 export const menuRoutes = [
@@ -38,6 +44,12 @@ export const menuRoutes = [
     dest: '/userManage',
     icon: 'user',
     requiredRoles: ['ADMIN', 'SUPERADMIN']
-  }
+  },
+  {
+    name: 'Role',
+    dest: '/roleManage',
+    icon: 'shield',
+    requiredRoles: ['SUPERADMIN']
+  },
 
 ]
