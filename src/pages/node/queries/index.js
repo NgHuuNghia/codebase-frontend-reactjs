@@ -21,12 +21,8 @@ export const UPDATE_NODE = gql`mutation updateNode($_id: ID!, $input: NodeInput!
      _id
      name
      category
-     createdAt
-     updatedAt
    }
      name
      category
-     createdAt
-     updatedAt
   }
 }`

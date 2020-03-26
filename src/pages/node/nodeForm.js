@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useMutation } from 'react-apollo'
 import { Form, Input, Drawer, notification, Select, Option } from '@digihcs/innos-ui3'
 
@@ -19,6 +19,9 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
   const [createNode] = useMutation(CREATE_NODE)
   const [updateNode] = useMutation(UPDATE_NODE)
   const [currentCategory, setCurrentCategory] = useState(EnumCategory[0])
+  useEffect(() => {
+    setCurrentCategory(category)
+  }, [category])
   const handleSubmit = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -152,10 +155,10 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
               }
             ]
           })(
-            <Select disabled={isViewDetail || category} style={{ width: '100%' }} onChange={(value) => { setCurrentCategory(value) }}>
-              {EnumCategory.map((category, index) => {
+            <Select disabled={isViewDetail || !!category} style={{ width: '100%' }} onChange={(value) => { setCurrentCategory(value) }}>
+              {EnumCategory.map((cat, index) => {
                 return (
-                  <Option key={index} value={category}>{category}</Option>
+                  <Option key={index} value={cat}>{cat}</Option>
                 )
               })}
             </Select>
@@ -163,7 +166,7 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
         </Form.Item>
         <Form.Item label="Parent Node">
           {getFieldDecorator('idParent', {
-            initialValue: parent?.name ? parent.name : null,
+            initialValue: parent?._id ? parent._id : null,
           })(
             <Select disabled={isViewDetail} style={{ width: '100%' }}>
               {nodes.map((node) => {
