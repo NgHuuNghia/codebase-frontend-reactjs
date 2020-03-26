@@ -1,55 +1,54 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react'
+import React, { useState } from 'react'
 import { useMutation } from 'react-apollo'
-import { Form, Input, Drawer, notification } from '@digihcs/innos-ui3'
-import { Select } from 'antd'
+import { Form, Input, Drawer, notification, Select, Option } from '@digihcs/innos-ui3'
 
-import { CREATE_ROLE, UPDATE_ROLE } from './queries'
+import { CREATE_NODE, UPDATE_NODE } from './queries/index'
 
-const { Option } = Select
+const EnumCategory = ['COMPANY', 'CITY', 'DEPARTMENT']
 
-const roleForm = Form.create({ name: 'role_form' })(props => {
-  const { form, initialRole, hide, visible, refetchRoles, dataPermissions, isViewDetail } = props
+const NodeForm = Form.create({ name: 'node_form' })(props => {
+  const { form, initialNode, hide, visible, refetchNodes, isViewDetail, nodes } = props
   const {
     resetFields,
     validateFields,
     getFieldDecorator,
     getFieldsError,
   } = form
-  const { _id, code, description, permissions } = initialRole
-  const [createRole] = useMutation(CREATE_ROLE)
-  const [updateRole] = useMutation(UPDATE_ROLE)
-
+  const { _id, name, category, parent } = initialNode
+  const [createNode] = useMutation(CREATE_NODE)
+  const [updateNode] = useMutation(UPDATE_NODE)
+  const [currentCategory, setCurrentCategory] = useState(EnumCategory[0])
   const handleSubmit = () => {
     validateFields((err, values) => {
       if (!err) {
-        const { code, description, permissions } = values
-        initialRole._id
-          ? updateRole({
+        const { name, category, idParent } = values
+        initialNode._id
+          ? updateNode({
             variables: {
               _id,
               input: {
-                code,
-                description,
-                permissions
+                name,
+                category,
+                idParent
               }
             }
           })
             .then(res => {
               if (res.errors) {
                 notification.bar({
-                  title: 'Update role failed!',
+                  title: 'Update node failed!',
                   type: 'error',
                   content: res.errors.message,
                   placement: 'bottomRight',
                   theme: 'pharmacy'
                 })
               } else {
-                refetchRoles()
+                refetchNodes()
                 resetFields()
                 hide()
                 notification.bar({
-                  title: 'Update role success',
+                  title: 'Update node success',
                   type: 'success',
                   placement: 'bottomRight',
                   theme: 'pharmacy'
@@ -59,36 +58,36 @@ const roleForm = Form.create({ name: 'role_form' })(props => {
             .catch(error => {
               console.log(error)
               notification.bar({
-                title: 'Update role failed!',
+                title: 'Update node failed!',
                 type: 'error',
                 placement: 'bottomRight',
                 theme: 'pharmacy'
               })
             })
-          : createRole({
+          : createNode({
             variables: {
               input: {
-                code,
-                description,
-                permissions
+                name,
+                category,
+                idParent
               }
             }
           })
             .then(res => {
               if (res.errors) {
                 notification.bar({
-                  title: 'Create role failed!',
+                  title: 'Create node failed!',
                   type: 'error',
                   content: res.errors.message,
                   placement: 'bottomRight',
                   theme: 'pharmacy'
                 })
               } else {
-                refetchRoles()
+                refetchNodes()
                 resetFields()
                 hide()
                 notification.bar({
-                  title: 'Create role success',
+                  title: 'Create node success',
                   type: 'success',
                   placement: 'bottomRight',
                   theme: 'pharmacy'
@@ -98,7 +97,7 @@ const roleForm = Form.create({ name: 'role_form' })(props => {
             .catch(err => {
               console.log(err)
               notification.bar({
-                title: 'Create role failed!',
+                title: 'Create node failed!',
                 type: 'error',
                 placement: 'bottomRight',
                 theme: 'pharmacy'
@@ -119,16 +118,16 @@ const roleForm = Form.create({ name: 'role_form' })(props => {
       }}
     >
       <h2 style={{ borderBottom: '1px solid #ccc', padding: 10, margin: 0 }}>
-        { !_id ? 'Create Role' : isViewDetail ? 'Detail Role' : 'Update Role'}
+        {!_id ? 'Create Node' : isViewDetail ? 'Detail Node' : 'Update Node'}
       </h2>
       <Form style={{ marginTop: 20 }}>
-        <Form.Item label="Code">
-          {getFieldDecorator('code', {
-            initialValue: code ? code : '',
+        <Form.Item label="Name">
+          {getFieldDecorator('name', {
+            initialValue: name ? name : '',
             rules: [
               {
                 required: true,
-                messages: 'Please input code'
+                messages: 'Please input name'
               },
               {
                 pattern: /^[^\s]/,
@@ -138,53 +137,47 @@ const roleForm = Form.create({ name: 'role_form' })(props => {
           })(
             <Input
               disabled={isViewDetail}
-              autoComplete={initialRole.code && 'off'}
-              placeholder="Input Code"
+              autoComplete={initialNode.name && 'off'}
+              placeholder="Input Name"
             />
           )}
         </Form.Item>
-        <Form.Item label="Description">
-          {getFieldDecorator('description', {
-            initialValue: description ? description : '',
+        <Form.Item label="Category">
+          {getFieldDecorator('category', {
+            initialValue: category ? category : EnumCategory[0],
             rules: [
               {
-                messages: 'Please input description'
+                required: true,
+                messages: 'Please select category'
               }
             ]
           })(
-            <Input
-              disabled={isViewDetail}
-              autoComplete={initialRole.description && 'off'}
-              placeholder="Input description"
-            />
-          )}
-        </Form.Item>
-        <Form.Item label="Permissions">
-          {getFieldDecorator('permissions', {
-            initialValue: permissions ? permissions : [],
-            rules: [
-              {
-                type: 'array',
-                messages: 'Please input permissions'
-              }
-            ]
-          })(
-            <Select
-              disabled={isViewDetail}
-              mode="multiple"
-              placeholder="Please select"
-              style={{ width: '100%' }}
-            >
-              {dataPermissions && dataPermissions.map((permission) => {
+            <Select disabled={isViewDetail || category} style={{ width: '100%' }} onChange={(value) => { setCurrentCategory(value) }}>
+              {EnumCategory.map((category, index) => {
                 return (
-                  <Option key={permission._id} value={permission.code} label="China">
-                    <div className="demo-option-label-item">
-                      <span role="img" aria-label="China">
-                        {permission.code}
-                      </span>
-                    </div>
-                  </Option>
+                  <Option key={index} value={category}>{category}</Option>
                 )
+              })}
+            </Select>
+          )}
+        </Form.Item>
+        <Form.Item label="Parent Node">
+          {getFieldDecorator('idParent', {
+            initialValue: parent?.name ? parent.name : null,
+          })(
+            <Select disabled={isViewDetail} style={{ width: '100%' }}>
+              {nodes.map((node) => {
+                if (currentCategory === 'DEPARTMENT' && node.category === 'CITY') {
+                  return (
+                    <Option key={node._id} value={node._id}>{`${node.name}(${node.parent.name})`}</Option>
+                  )
+                }
+                if (currentCategory === 'CITY' && node.category === 'COMPANY') {
+                  return (
+                    <Option key={node._id} value={node._id}>{node.name}</Option>
+                  )
+                }
+                return null
               })}
             </Select>
           )}
@@ -194,4 +187,4 @@ const roleForm = Form.create({ name: 'role_form' })(props => {
   )
 })
 
-export default roleForm
+export default NodeForm

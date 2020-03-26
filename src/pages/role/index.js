@@ -30,7 +30,7 @@ const Role = () => {
     setVisible(false)
     setIsViewDetail(false)
   }
-  const handleDeleteShop = (_id) => {
+  const handleDeleteRole = (_id) => {
     Modal.confirm({
       title: 'Delete Role',
       content: 'Are you sure delete this role?',
@@ -86,7 +86,7 @@ const Role = () => {
         icon: 'Trash',
         type: 'single',
         tooltip: 'Xoá',
-        onClick: rows => handleDeleteShop(rows[0]._id)
+        onClick: rows => handleDeleteRole(rows[0]._id)
       },
       {
         key: 'edit',

@@ -1,0 +1,37 @@
+$color_1: #ededed;
+$color_active: #cfcfcf;
+$color_icon: #134275;
+.container-node{
+  background-color: white; 
+  padding: 20px 30px 10px 30px;
+  width: 95%;
+  margin: 0 auto;
+  .ant-list-bordered {
+    border-left: none;
+    border-right: none;
+    .ant-list-header{
+      background-color: $color_1;
+    }
+    .ant-list-item {
+      font-weight: bolder;
+    }
+  }
+  .node-action{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 25px;
+  }
+  .react-feather-icon {
+    font-size: 20px;
+    margin-left: 15px;
+    color:$color_icon;
+  }
+  .activate{
+    background-color: $color_active ;
+  }
+}
+
+.rst__row {
+  height: 50px;
+}

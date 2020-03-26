@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from 'react-apollo'
 import { ERPGrid } from '@digihcs/grid'
 import { DynamicPage, Modal, notification } from '@digihcs/innos-ui3'
+import * as XLSX from 'xlsx'
 
 import { GET_USERS, DELETE_USER } from './queries'
 import UserForm from './userForm'
@@ -57,6 +58,21 @@ const User = () => {
       }
     })
   }
+
+  const exportToExcel = async () => {
+    const DataNew = []
+    const fileName = 'danh sách user'
+      dataUsers.users.map(item => {
+          DataNew.push({ fullname: item.fullName })
+          return DataNew
+      })
+      const ws = XLSX.utils.json_to_sheet(DataNew, { skipHeader: true, origin: "A5" })
+      XLSX.utils.sheet_add_aoa(ws, [['Danh sách nhân viên Acexis']], { origin: "A1" })
+      XLSX.utils.sheet_add_aoa(ws, [['Tên nhân viên']], { origin: "A3" })
+      const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
+      XLSX.writeFile(wb, `${fileName}.xlsx`)
+  }
+
   const gridOptions = {
     headerDefs: [
       {
@@ -111,6 +127,14 @@ const User = () => {
       <DynamicPage.HeaderTitle
         title="User"
         style={{ backgroundColor: 'inherit' }}
+        actions={[
+          {
+            text: 'Export data',
+            showText: true,
+            noFill: false,
+            onClick: exportToExcel
+          }
+        ]}
       />
       <DynamicPage.Content>
         {dataUsers && (
