@@ -136,8 +136,8 @@ const Node = ({ data: { refetch: refetchNodes, nodes }, mutation: { deleteNode }
                       </span>
                     ),
                     buttons: [
-                      <Button noFill>
-                        <span><Icon type="eye" onClick={() => viewDetail(node)} /></span>
+                      <Button noFill onClick={() => viewDetail(node)}>
+                        <span><Icon type="eye" /></span>
                       </Button>,
                       <Button noFill onClick={() => show(node)}>
                         <span><Icon type="edit-2" /></span>
@@ -159,6 +159,7 @@ const Node = ({ data: { refetch: refetchNodes, nodes }, mutation: { deleteNode }
                 searchFinishCallback={(matches) => {
                   setLenMatches(matches.length)
                 }}
+                canDrag={false}
               />
             </div>
             <NodeForm
