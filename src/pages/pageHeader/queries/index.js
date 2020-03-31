@@ -5,10 +5,7 @@ export const GET_CITY_NODES = gql`
     getNodeByCategory(category: $category) {
         _id
         name
-        parent {
-          _id
-          name
-        }
+        idParent
       }
   }
 `

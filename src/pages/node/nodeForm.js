@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useMutation } from 'react-apollo'
 import { Form, Input, Drawer, notification, Select, Option } from '@digihcs/innos-ui3'
 
@@ -8,20 +8,17 @@ import { CREATE_NODE, UPDATE_NODE } from './queries/index'
 const EnumCategory = ['COMPANY', 'CITY', 'DEPARTMENT']
 
 const NodeForm = Form.create({ name: 'node_form' })(props => {
-  const { form, initialNode, hide, visible, refetchNodes, isViewDetail, nodes } = props
+  const { form, initialNode, hide, visible, refetchNodes, refetchTreeNodes, isViewDetail, nodes } = props
   const {
     resetFields,
     validateFields,
     getFieldDecorator,
     getFieldsError,
   } = form
-  const { _id, name, category, parent } = initialNode
+  const { _id, title, subtitle, idParent } = initialNode
+
   const [createNode] = useMutation(CREATE_NODE)
   const [updateNode] = useMutation(UPDATE_NODE)
-  const [currentCategory, setCurrentCategory] = useState(EnumCategory[0])
-  useEffect(() => {
-    setCurrentCategory(category)
-  }, [category])
   const handleSubmit = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -47,6 +44,7 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
                   theme: 'pharmacy'
                 })
               } else {
+                refetchTreeNodes()
                 refetchNodes()
                 resetFields()
                 hide()
@@ -86,6 +84,7 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
                   theme: 'pharmacy'
                 })
               } else {
+                refetchTreeNodes()
                 refetchNodes()
                 resetFields()
                 hide()
@@ -126,7 +125,7 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
       <Form style={{ marginTop: 20 }}>
         <Form.Item label="Name">
           {getFieldDecorator('name', {
-            initialValue: name ? name : '',
+            initialValue: title ? title : '',
             rules: [
               {
                 required: true,
@@ -140,14 +139,14 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
           })(
             <Input
               disabled={isViewDetail}
-              autoComplete={initialNode.name && 'off'}
+              autoComplete={initialNode.title && 'off'}
               placeholder="Input Name"
             />
           )}
         </Form.Item>
         <Form.Item label="Category">
           {getFieldDecorator('category', {
-            initialValue: category ? category : EnumCategory[0],
+            initialValue: subtitle ? subtitle : EnumCategory[0],
             rules: [
               {
                 required: true,
@@ -155,7 +154,7 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
               }
             ]
           })(
-            <Select disabled={isViewDetail || !!category} style={{ width: '100%' }} onChange={(value) => { setCurrentCategory(value) }}>
+            <Select disabled={isViewDetail} style={{ width: '100%' }}>
               {EnumCategory.map((cat, index) => {
                 return (
                   <Option key={index} value={cat}>{cat}</Option>
@@ -166,21 +165,14 @@ const NodeForm = Form.create({ name: 'node_form' })(props => {
         </Form.Item>
         <Form.Item label="Parent Node">
           {getFieldDecorator('idParent', {
-            initialValue: parent?._id ? parent._id : null,
+            initialValue: idParent ? idParent : null,
           })(
             <Select disabled={isViewDetail} style={{ width: '100%' }}>
-              {nodes.map((node) => {
-                if (currentCategory === 'DEPARTMENT' && node.category === 'CITY') {
-                  return (
-                    <Option key={node._id} value={node._id}>{`${node.name}(${node.parent.name})`}</Option>
-                  )
-                }
-                if (currentCategory === 'CITY' && node.category === 'COMPANY') {
-                  return (
-                    <Option key={node._id} value={node._id}>{node.name}</Option>
-                  )
-                }
-                return null
+              <Option key={1} value={null} style={{ color: 'red' }}>NULL</Option>
+              {nodes && nodes.map((node) => {
+                return (
+                  <Option key={node._id} value={node._id}>{node.name}</Option>
+                )
               })}
             </Select>
           )}

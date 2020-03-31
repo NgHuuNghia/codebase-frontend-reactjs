@@ -10,7 +10,8 @@ import { GET_CITY_NODES } from './queries/index'
 
 function index(props) {
   const { history, toggleMenu } = props
-  const { data: getNodeByCategory, loading } = useQuery(GET_CITY_NODES, { variables: { category: "CITY" },
+  const { data: getNodeByCategory, loading } = useQuery(GET_CITY_NODES, {
+    variables: { category: "CITY" },
     fetchPolicy: 'network-only'
   })
   if (loading) return <Loading />
@@ -48,12 +49,12 @@ function index(props) {
           </div>
         </Navbar.NavLeft>
         <Navbar.NavCenter>
-          <Select style={{ width: '20vw' }} onChange={(value) => handleChangeNode(value)} defaultValue={`${getNodeByCategory?.getNodeByCategory[0]?.name} (${getNodeByCategory?.getNodeByCategory[0]?.parent.name})`}>
+          <Select style={{ width: '20vw' }} onChange={(value) => handleChangeNode(value)} defaultValue={`${getNodeByCategory?.getNodeByCategory[0]?.name}`}>
             {getNodeByCategory.getNodeByCategory.map((node) => {
-                return (
-                  <Option key={node._id} value={node._id}>{`${node.name} (${node.parent.name})`}</Option>
-                )
-              })}
+              return (
+                <Option key={node._id} value={node._id}>{`${node.name}`}</Option>
+              )
+            })}
           </Select>
         </Navbar.NavCenter>
       </Navbar>
