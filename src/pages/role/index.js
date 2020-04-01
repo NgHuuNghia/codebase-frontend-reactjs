@@ -67,13 +67,13 @@ const Role = () => {
 
   const gridOptions = {
     headerDefs: [
-    {
-      key: 'view',
-      icon: 'Eye',
-      type: 'single',
-      onClick: rows => viewDetail(rows[0]),
-      tooltip: 'View'
-    },
+      {
+        key: 'view',
+        icon: 'Eye',
+        type: 'single',
+        onClick: rows => viewDetail(rows[0]),
+        tooltip: 'View'
+      },
       {
         key: 'add',
         icon: 'Plus',
@@ -128,7 +128,7 @@ const Role = () => {
             style={{
               height: 'calc(100vh - 145px)',
               padding: '15px 0'
-          }}
+            }}
           >
             <ERPGrid
               gridName='Role Manager'

@@ -36,6 +36,18 @@ export const routersAuth = [
     component: 'node',
     name: 'Quản lý Nhánh'
   },
+  {
+    exact: true,
+    path: '/shopManager',
+    component: 'shop',
+    name: 'Quản lý Cửa hàng'
+  },
+  {
+    exact: true,
+    path: '/menuManager',
+    component: 'menu',
+    name: 'Quản lý thực đơn'
+  },
 ]
 
 export const menuRoutes = [
@@ -62,6 +74,18 @@ export const menuRoutes = [
     dest: '/nodeManager',
     icon: 'map-pin',
     requiredRoles: ['SUPERADMIN']
+  },
+  {
+    name: 'Shop',
+    dest: '/shopManager',
+    icon: 'home',
+    requiredRoles: ['SUPERADMIN', 'ADMIN']
+  },
+  {
+    name: 'Menu',
+    dest: '/menuManager',
+    icon: 'menu',
+    requiredRoles: ['SUPERADMIN', 'ADMIN']
   },
 
 ]
