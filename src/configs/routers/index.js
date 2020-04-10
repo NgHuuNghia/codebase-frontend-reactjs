@@ -48,6 +48,12 @@ export const routersAuth = [
     component: 'menu',
     name: 'Quản lý thực đơn'
   },
+  {
+    exact: true,
+    path: '/roomchat',
+    component: 'roomChat',
+    name: 'Phòng chat'
+  },
 ]
 
 export const menuRoutes = [
@@ -87,5 +93,11 @@ export const menuRoutes = [
     icon: 'menu',
     requiredRoles: ['SUPERADMIN', 'ADMIN']
   },
+  {
+    name: 'RoomChat',
+    dest: '/roomchat',
+    icon: 'message-square',
+    requiredRoles: ['USER', 'SUPERADMIN', 'ADMIN']
+  }
 
 ]
